@@ -21,6 +21,10 @@ jobs:
         with:
           node-version: 20
 
+      - uses: JS-DevTools/npm-publish@v3
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+
       - name: pnpm
         uses: pnpm/action-setup@v4.0.0
         with:
@@ -44,14 +48,6 @@ jobs:
 
       - name: Build project
         run: pnpm run build
-
-      - name: Authenticate with NPM Registry
-        run: |
-          echo "registry=https://registry.npmjs.org/" >> .npmrc
-          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> .npmrc
-          npm whoami
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish NPM
         run: npm publish --tag ${{ github.event.inputs.bump }}
