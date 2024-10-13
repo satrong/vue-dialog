@@ -64,7 +64,7 @@ useDialog({
 _DialogForm.vue_ component:
 ```html
 <template>
-  <button @click="close('hi')">will remove this component after click</button>
+  <button @click="close('hi', 'Vue')">will remove this component after click</button>
   <button @click="submit">submit</button>
 </template>
 
