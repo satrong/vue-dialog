@@ -21,9 +21,6 @@ jobs:
         with:
           node-version: 20
 
-      - uses: JS-DevTools/npm-publish@v3
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
 
       - name: pnpm
         uses: pnpm/action-setup@v4.0.0
@@ -50,4 +47,6 @@ jobs:
         run: pnpm run build
 
       - name: Publish NPM
-        run: npm publish --tag ${{ github.event.inputs.bump }}
+        uses: JS-DevTools/npm-publish@v3
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
