@@ -31,9 +31,9 @@ function createConfig (config: ConfigItem) {
   return defineConfig({
     input: 'src/index.ts',
     output: {
-      file: `./dist/vue-insert-component${config.file}`,
+      file: `./dist/vue-dialog${config.file}`,
       format: config.format,
-      name: config.format === 'iife' ? 'VueInsertComponent' : 'vue-insert-component',
+      name: config.format === 'iife' ? 'VueDialog' : 'vue-dialog',
       globals: {
         vue: 'Vue'
       },

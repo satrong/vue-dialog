@@ -3,9 +3,10 @@ import {
   defineComponent, h, shallowRef, triggerRef
 } from 'vue'
 import type { PropType, VNode, Component, ComponentInternalInstance } from 'vue'
-import { InsertOptions, Callback } from './index.d'
+import { DialogOptions, Callback } from './index.d'
 import { omit } from './helper'
 
+const CMP_NAME = 'satrong-vue-dialog'
 const list = shallowRef([] as VNode[])
 const cbMap = new WeakMap<VNode, Callback>()
 let defaultContainerComponent: Component | undefined
@@ -23,7 +24,7 @@ const onClose = (vnode: VNode) => {
   }
 }
 
-function insert (options: InsertOptions, container = defaultContainerComponent) {
+export function useDialog (options: DialogOptions, container = defaultContainerComponent) {
   let itemVNode: VNode
 
   options.component.inheritAttrs = true
@@ -56,9 +57,7 @@ function insert (options: InsertOptions, container = defaultContainerComponent) 
   return onClose(itemVNode)
 }
 
-export const useInsert = insert
-
-export function usePluck () {
+export function useCloseDialog () {
   const instance = getCurrentInstance()
 
   const tryClose = (...args: any[]) => {
@@ -81,7 +80,7 @@ function getCurrentContainer (instance: ComponentInternalInstance) {
   let prev = instance
   let p = instance.parent
   while (p) {
-    if (p.type.name === 'InsertWrap') {
+    if (p.type.name === CMP_NAME) {
       return prev
     }
     prev = p
@@ -90,29 +89,13 @@ function getCurrentContainer (instance: ComponentInternalInstance) {
   return null
 }
 
-/**
- * @deprecated use `usePluck` instead
- */
-export const useUnInsert = usePluck
-
-export default defineComponent({
-  name: 'InsertWrap',
+export const DialogSlot = defineComponent({
+  name: CMP_NAME,
   props: {
-    containerComponent: Object as PropType<Component>
+    container: Object as PropType<Component>
   },
   setup (props) {
-    const instance = getCurrentInstance()
-    defaultContainerComponent = props.containerComponent
-    if (instance) {
-      Object.assign(instance.appContext.config.globalProperties, {
-        $insert: insert,
-        /**
-         * @deprecated use `$pluck` instead
-         */
-        $uninsert: onClose(instance.vnode),
-        $pluck: onClose(instance.vnode)
-      })
-    }
+    defaultContainerComponent = props.container
 
     return () => list.value.map(el => h(el))
   }

@@ -1,31 +1,40 @@
-Insert Vue component into root component for Vue 3.
+Easy to place your vue components into dialog using the API (Works with Vue 3.x and Vue 2.7+).
 
 English | [简体中文](./README-zh.md)
 
-## `insertComponent(App, ContainerComponent?)`
-> `App` component __must include default slot__.
+## API
+
+`useDialog(options)`:
+- `options.component` `{Component}` **required**. 
+- `options.props` `{object}` Corresponds to `options.component`'s props.
+- `options.callback(...args1)` `{function}` When exec `useCloseDialog()(...args2)` this function will be fired. The `args1` is from `args2`
+
+## Install
+
+First, install dependencies
+
+```bash
+npm install @satrong/vue-dialog
+```
+
+And then import the `DialogSlot` component in your root component.
 
 _App.vue_:
-```vue
+
+```js
+<script setup>
+import { DialogSlot } from '@satrong/vue-dialog'
+</script>
+
 <template>
-  <div></div>
-  <slot /> <!-- must use default slot -->
+  <div id="app">
+    <h1>Root component</h1>
+    <DialogSlot />
+  </div>
 </template>
 ```
 
-## `$insert(options, ContainerComponent?)`
-- `options.component` `{Component}` **required**. 
-- `options.props` `{object}` Merge to `options.component`'s props.
-- `options.callback(...args1)` `{function}` When exec `$pluck(...args2)` this function will be fired. The `args1` is from `args2`
-
-## Usage
-```js
-import { createApp } from 'vue'
-import insertComponent from 'vue-insert-component'
-import App from './App.vue'
-
-createApp(insertComponent(App)).mount('#app')
-```
+Finally, you can use the `useDialog` function to insert your component into the dialog.
 
 _Foo.vue_ component:
 ```html
@@ -33,87 +42,41 @@ _Foo.vue_ component:
   <button @click="add">insert DialogForm to root component</button>
 </template>
 
-<script>
-import { defineComponent } from 'vue'
+<script setup>
+import { useDialog } from '@satrong/vue-dialog'
 import DialogForm from './DialogForm.vue'
 
-export default defineComponent({
-  methods: {
-    add() {
-      this.$insert({
-        component: DialogForm,
-        props: {
-          name: 'Vue'
-        },
-        callback(a, b) {
-          console.log(a, b) // hi, Vue
-        }
-      })
-    }
-  }
-})
-</script>
-```
-
-_DialogForm.vue_ component:
-```html
-<template>
-  <button @click="remove">remove this component from root component</button>
-</template>
-
-<script>
-import { defineComponent } from 'vue'
-
-export default defineComponent({
+useDialog({
+  component: DialogForm,
   props: {
-    name: String
-  },
-  methods: {
-    remove() {
-      this.$pluck('hi', this.name)
+    name: 'Vue',
+    onSubmit() {
+      // do something after submit
     }
+  },
+  callback(a, b) {
+    console.log(a, b) // hi, Vue
   }
 })
-</script>
-```
-
-## Composition API
-```html
-<template>
-  <button @click="onAdd">insert DialogForm to root component</button>
-</template>
-
-<script setup>
-import { useInsert } from 'vue-insert-component'
-import DialogForm from './DialogForm.vue'
-
-function onAdd() {
-  useInsert({
-    component: DialogForm,
-    props: {
-      name: 'Vue'
-    },
-    callback(a, b) {
-      console.log(a, b) // hi, Vue
-    }
-  })
-}
 </script>
 ```
 
 _DialogForm.vue_ component:
 ```html
 <template>
-  <button @click="onClose">remove this component from root component</button>
+  <button @click="close('hi')">will remove this component after click</button>
+  <button @click="submit">submit</button>
 </template>
 
 <script setup>
-import { usePluck } from 'vue-insert-component'
+import { useCloseDialog } from '@satrong/vue-dialog'
 
-const pluck = usePluck()
+const props = defineProps(['name', 'onSubmit'])
 
-function onClose() {
-  pluck('hi', 'vue')
+const close = useCloseDialog()
+
+function submit() {
+  props.onSubmit(props.name)
 }
 </script>
 ```
