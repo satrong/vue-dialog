@@ -1,6 +1,6 @@
 {
   "name": "@satrong/vue-dialog",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Easy to place your vue components into a dialog using the API.",
   "main": "dist/vue-dialog.mjs",
   "exports": {
