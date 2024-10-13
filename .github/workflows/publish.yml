@@ -1,5 +1,5 @@
 
-name: RELEASE
+name: Publish to NPM
 
 on:
   workflow_dispatch:
@@ -50,3 +50,4 @@ jobs:
         uses: JS-DevTools/npm-publish@v3
         with:
           token: ${{ secrets.NPM_TOKEN }}
+          tag: ${{ github.event.inputs.bump }}
