@@ -8,6 +8,8 @@ export interface DialogOptions<T extends abstract new (...args: any) => any = De
   component: T;
   /** transfer to components's `props` */
   props?: Omit<InstanceType<T>['$props'], keyof BaseProps>;
+  /** callback after dialog closed */
+  callback?: Callback;
 }
 
 type Fn = () => void
