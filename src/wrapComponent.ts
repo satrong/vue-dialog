@@ -3,7 +3,7 @@ import {
   defineComponent, h, shallowRef, triggerRef
 } from 'vue'
 import type { PropType, VNode, Component, ComponentInternalInstance } from 'vue'
-import { DialogOptions, Callback } from './index.d'
+import { DialogOptions, Callback, CloseDialogOptions } from './index.d'
 import { omit } from './helper'
 
 const CMP_NAME = 'satrong-vue-dialog'
@@ -57,13 +57,13 @@ export function useDialog (options: DialogOptions, container = defaultContainerC
   return onClose(itemVNode)
 }
 
-export function useCloseDialog () {
+export function useCloseDialog (options: CloseDialogOptions = { immediate: false }) {
   const instance = getCurrentInstance()
 
   const tryClose = (...args: any[]) => {
     if (instance) {
       const container = getCurrentContainer(instance)
-      if (typeof container?.exposed?.close === 'function') {
+      if (!options.immediate && typeof container?.exposed?.close === 'function') {
         container.exposed.close(...args)
       } else {
         onClose(instance.vnode)(...args)

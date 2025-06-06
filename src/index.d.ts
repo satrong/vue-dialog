@@ -15,8 +15,13 @@ export interface DialogOptions<T extends abstract new (...args: any) => any = De
 type Fn = () => void
 declare function useDialog<T extends abstract new (...args: any) => any>(options: DialogOptions<T>, containerComponent?: Component): Fn;
 
+export interface CloseDialogOptions {
+  /** close dialog immediate */
+  immediate?: boolean
+}
+
 type tryClose = (...args: any[]) => void
-declare function useCloseDialog(): tryClose;
+declare function useCloseDialog(options?: CloseDialogOptions): tryClose;
 
 declare const DialogSlot: DefineComponent<{ container: Component }>
 
